@@ -7,21 +7,21 @@ import java.util.UUID;
 /**
  * Created by Ragonda on 20/01/2017.
  */
-public class Utilisateurs {
+public class Utilisateur {
 
     private String nom;
     private String prenom;
     private String email;
     private String id;
 
-    public Utilisateurs(BasicDBObject basicDBObject){
+    public Utilisateur(BasicDBObject basicDBObject){
         this.id = ((ObjectId) basicDBObject.get("_id")).toString();
         this.nom = basicDBObject.getString("nom");
         this.prenom = basicDBObject.getString("prenom");
         this.email = basicDBObject.getString("email");
     }
 
-    public Utilisateurs(String nom, String prenom, String email){
+    public Utilisateur(String nom, String prenom, String email){
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;

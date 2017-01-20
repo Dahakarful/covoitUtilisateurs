@@ -32,8 +32,8 @@ public class Application {
         port(8080);
         enableCORS("*", "*", "*");
 
-        UtilisateursDao utilisateursDao = new UtilisateursDao(mongo());
-        get("/utilisateur", (req, res) -> utilisateursDao.listerTous(), new JsonTransformer());
+        UtilisateurDao utilisateurDao = new UtilisateurDao(mongo());
+        get("/utilisateur", (req, res) -> utilisateurDao.listerTous(), new JsonTransformer());
     }
 
     // Enables CORS on requests. This method is an initialization method and should be called once.
