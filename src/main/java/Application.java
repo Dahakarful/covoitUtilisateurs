@@ -1,8 +1,6 @@
 import com.mongodb.*;
 
-import static spark.Spark.before;
-import static spark.Spark.options;
-import static spark.Spark.port;
+import static spark.Spark.*;
 
 /**
  * Created by Ragonda on 20/01/2017.
@@ -35,7 +33,7 @@ public class Application {
         enableCORS("*", "*", "*");
 
         UtilisateursDao utilisateursDao = new UtilisateursDao(mongo());
-
+        get("/utilisateur", (req, res) -> utilisateursDao.listerTous(), new JsonTransformer());
     }
 
     // Enables CORS on requests. This method is an initialization method and should be called once.
