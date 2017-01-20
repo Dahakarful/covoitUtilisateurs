@@ -33,6 +33,9 @@ public class Application {
     public static void main(String args[]) throws Exception {
         port(8080);
         enableCORS("*", "*", "*");
+
+        UtilisateursDao utilisateursDao = new UtilisateursDao(mongo());
+
     }
 
     // Enables CORS on requests. This method is an initialization method and should be called once.

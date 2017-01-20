@@ -1,6 +1,6 @@
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
+import com.mongodb.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,5 +16,19 @@ public class UtilisateursDao {
     public UtilisateursDao(DB db){
         this.db = db;
         this.collection = db.getCollection("utilisateurs");
+    }
+
+    public List<Utilisateurs> listerTous(){
+        List<Utilisateurs> utilisateurs = new ArrayList<>();
+        DBCursor dbCursor = collection.find();
+        while(dbCursor.hasNext()){
+            DBObject dbObject = dbCursor.next();
+            utilisateurs.add(new Utilisateurs((BasicDBObject) dbObject));
+        }
+        return utilisateurs;
+    }
+
+    public void ajouterUtilisateur(){
+
     }
 }
