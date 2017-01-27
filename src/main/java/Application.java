@@ -33,7 +33,12 @@ public class Application {
         enableCORS("*", "*", "*");
 
         UtilisateurDao utilisateurDao = new UtilisateurDao(mongo());
-        get("/utilisateur", (req, res) -> utilisateurDao.listerTous(), new JsonTransformer());
+        post("/utilisateur", (req, res) -> {
+            utilisateurDao.ajouterUtilisateur(new Utilisateur(req.queryParams("nom"),
+                    req.queryParams("prenom"), req.queryParams("email")));
+            res.status(201);
+            return 1;
+        }, new JsonTransformer());
     }
 
     // Enables CORS on requests. This method is an initialization method and should be called once.

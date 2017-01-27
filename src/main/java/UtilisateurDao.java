@@ -18,7 +18,7 @@ public class UtilisateurDao {
         this.collection = db.getCollection("utilisateurs");
     }
 
-    public List<Utilisateur> listerTous(){
+    public List<Utilisateur> listerUtilisateurs(){
         List<Utilisateur> utilisateurs = new ArrayList<>();
         DBCursor dbCursor = collection.find();
         while(dbCursor.hasNext()){
@@ -32,5 +32,16 @@ public class UtilisateurDao {
         DBObject doc = new BasicDBObject("nom", utilisateur.getNom()).append("prenom", utilisateur.getPrenom()).append("email", utilisateur.getEmail());
         collection.insert(doc);
         utilisateur.setId(doc.get("_id").toString());
+    }
+
+    public void supprimerUtilisateur(Utilisateur utilisateur){
+        DBObject doc = (DBObject) utilisateur;
+        collection.remove(doc);
+    }
+
+    public Utilisateur chercherUtilisateur(String nom){
+        DBObject doc = new BasicDBObject("nom", nom);
+        Utilisateur utilisateur = (Utilisateur) collection.findOne(doc);
+        return utilisateur;
     }
 }
