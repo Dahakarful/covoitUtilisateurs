@@ -11,7 +11,7 @@ public class Application {
         String host = System.getenv("MONGODB_ADDON_HOST");
         if(host == null){
             MongoClient mongoClient = new MongoClient("localhost");
-            return mongoClient.getDB("todoapp");
+            return mongoClient.getDB("covoiturage");
         }
         int port = 27017;
         String dbname = System.getenv("MONGODB_ADDON_DB");
@@ -33,11 +33,27 @@ public class Application {
         enableCORS("*", "*", "*");
 
         UtilisateurDao utilisateurDao = new UtilisateurDao(mongo());
-        post("/", (req, res) -> {
+
+        // Ajouter utilisateur
+        post("/senregistrer", (req, res) -> {
             utilisateurDao.ajouterUtilisateur(new Utilisateur(req.queryParams("nom"),
-                    req.queryParams("prenom"), req.queryParams("email")));
+                    req.queryParams("prenom"), req.queryParams("email"),
+                    MotDePasseCryptage.cryptWithMD5(req.queryParams("motDePasse"))));
             res.status(201);
             return 1;
+        }, new JsonTransformer());
+
+        // Connexion
+        get("/connexion", (req, res) -> {
+           boolean result = utilisateurDao.connexion(req.queryParams("email"), MotDePasseCryptage.cryptWithMD5(req.headers("Authorization")));
+           System.out.println(result);
+           if(result){
+               res.status(201);
+               return 1;
+           }else{
+               res.status(401);
+               return 0;
+           }
         }, new JsonTransformer());
     }
 

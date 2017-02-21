@@ -2,6 +2,9 @@ import com.mongodb.BasicDBObject;
 import org.bson.types.ObjectId;
 import sun.net.www.content.audio.basic;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -13,19 +16,28 @@ public class Utilisateur {
     private String prenom;
     private String email;
     private String id;
+    private String motDePasse;
+    private String token;
+    private Date tokenExpire;
 
     public Utilisateur(BasicDBObject basicDBObject){
         this.id = ((ObjectId) basicDBObject.get("_id")).toString();
         this.nom = basicDBObject.getString("nom");
         this.prenom = basicDBObject.getString("prenom");
         this.email = basicDBObject.getString("email");
+        this.motDePasse = basicDBObject.getString("motDePasse");
+        this.token = "";
+        this.tokenExpire = null;
     }
 
-    public Utilisateur(String nom, String prenom, String email){
+    public Utilisateur(String nom, String prenom, String email, String motDePasse){
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
         this.id = UUID.randomUUID().toString();
+        this.motDePasse = motDePasse;
+        this.token = "";
+        this.tokenExpire = null;
     }
 
     public String getNom() {
@@ -58,5 +70,31 @@ public class Utilisateur {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getMotDePasse() {
+        return motDePasse;
+    }
+
+    public void setMotDePasse(String motDePasse) {
+        this.motDePasse = motDePasse;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken() {
+        this.token = UUID.randomUUID().toString();
+    }
+
+    public Date getTokenExpire() {
+        return tokenExpire;
+    }
+
+    public void setTokenExpire() {
+        Calendar cal = Utils.getCalendar();
+        cal.add(Calendar.HOUR_OF_DAY, 1);
+        this.tokenExpire = cal.getTime();
     }
 }

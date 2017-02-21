@@ -29,9 +29,27 @@ public class UtilisateurDao {
     }
 
     public void ajouterUtilisateur(Utilisateur utilisateur){
-        DBObject doc = new BasicDBObject("nom", utilisateur.getNom()).append("prenom", utilisateur.getPrenom()).append("email", utilisateur.getEmail());
+        DBObject doc = new BasicDBObject("nom", utilisateur.getNom()).append("prenom", utilisateur.getPrenom()).append("email", utilisateur.getEmail())
+                .append("motDePasse", utilisateur.getMotDePasse());
         collection.insert(doc);
         utilisateur.setId(doc.get("_id").toString());
+    }
+
+    public boolean connexion(String email, String motDePasse){
+        boolean connecte = false;
+        DBObject doc = new BasicDBObject("email", email);
+        DBObject result = collection.findOne(doc);
+        if(result != null) {
+            Utilisateur utilisateur = (Utilisateur) result;
+            if (utilisateur.getMotDePasse().equals(motDePasse)) {
+                if(utilisateur.getToken() == "" || (utilisateur.getToken() != "" && utilisateur.getTokenExpire().before(Utils.getCalendar().getTime()))) {
+                    utilisateur.setToken();
+                    utilisateur.setTokenExpire();
+                }
+                connecte = true;
+            }
+        }
+        return connecte;
     }
 
     public void supprimerUtilisateur(Utilisateur utilisateur){
