@@ -34,7 +34,7 @@ public class Application {
 
         UtilisateurDao utilisateurDao = new UtilisateurDao(mongo());
 
-        // Ajouter utilisateur
+        // AJOUTER UTILISATEUR ---------------------------------------------------
         post("/senregistrer", (req, res) -> {
             utilisateurDao.ajouterUtilisateur(new Utilisateur(req.queryParams("nom"),
                     req.queryParams("prenom"), req.queryParams("email"),
@@ -42,39 +42,42 @@ public class Application {
             res.status(201);
             return 1;
         }, new JsonTransformer());
+        // --------------------------------------------------------------------------
 
-        // Connexion
-        get("/connexion", (req, res) -> {
-           boolean result = utilisateurDao.connexion(req.queryParams("email"), MotDePasseCryptage.cryptWithMD5(req.headers("Authorization")));
-           System.out.println(result);
-           if(result){
+        // CONNEXION -----------------------------------------------------------------
+        post("/connexion", (req, res) -> {
+            String token = req.headers("Authorization");
+            System.out.println(token);
+            if(token == null){
+                token = "";
+            }
+           String result = utilisateurDao.connexion(req.queryParams("email"),
+                   MotDePasseCryptage.cryptWithMD5(req.queryParams("motDePasse")),
+                   token);
+           if("connect".equals(result) || "updateToken".equals(result)){
                res.status(201);
-               return 1;
+               return result;
            }else{
                res.status(401);
-               return 0;
+               return result;
            }
         }, new JsonTransformer());
+        // ----------------------------------------------------------------------------
     }
 
     // Enables CORS on requests. This method is an initialization method and should be called once.
     private static void enableCORS(final String origin, final String methods, final String headers) {
-
         options("/*", (request, response) -> {
-
             String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
             if (accessControlRequestHeaders != null) {
                 response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
             }
-
             String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
             if (accessControlRequestMethod != null) {
                 response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
             }
-
             return "OK";
         });
-
         before((request, response) -> {
             response.header("Access-Control-Allow-Origin", origin);
             response.header("Access-Control-Request-Method", methods);

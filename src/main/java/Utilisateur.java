@@ -15,29 +15,38 @@ public class Utilisateur {
     private String nom;
     private String prenom;
     private String email;
-    private String id;
+//    private String id;
     private String motDePasse;
     private String token;
     private Date tokenExpire;
 
     public Utilisateur(BasicDBObject basicDBObject){
-        this.id = ((ObjectId) basicDBObject.get("_id")).toString();
+//        this.id = ((ObjectId) basicDBObject.get("_id")).toString();
         this.nom = basicDBObject.getString("nom");
         this.prenom = basicDBObject.getString("prenom");
         this.email = basicDBObject.getString("email");
         this.motDePasse = basicDBObject.getString("motDePasse");
-        this.token = "";
-        this.tokenExpire = null;
+        this.token = basicDBObject.getString("token");
+        this.tokenExpire = basicDBObject.getDate("tokenExpire");
     }
 
     public Utilisateur(String nom, String prenom, String email, String motDePasse){
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
-        this.id = UUID.randomUUID().toString();
+//        this.id = UUID.randomUUID().toString();
         this.motDePasse = motDePasse;
         this.token = "";
         this.tokenExpire = null;
+    }
+
+    public Utilisateur(String nom, String prenom, String email, String motDePasse, String token, Date tokenExpire){
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.motDePasse = motDePasse;
+        this.token = token;
+        this.tokenExpire = tokenExpire;
     }
 
     public String getNom() {
@@ -64,13 +73,13 @@ public class Utilisateur {
         this.email = email;
     }
 
-    public String getId() {
-        return id;
-    }
+//    public String getId() {
+//        return id;
+//    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+//    public void setId(String id) {
+//        this.id = id;
+//    }
 
     public String getMotDePasse() {
         return motDePasse;
@@ -84,12 +93,20 @@ public class Utilisateur {
         return token;
     }
 
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public void setToken() {
         this.token = UUID.randomUUID().toString();
     }
 
     public Date getTokenExpire() {
         return tokenExpire;
+    }
+
+    public void setTokenExpire(Date tokenExpire) {
+        this.tokenExpire = tokenExpire;
     }
 
     public void setTokenExpire() {
