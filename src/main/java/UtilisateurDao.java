@@ -32,7 +32,7 @@ public class UtilisateurDao {
     public void ajouterUtilisateur(Utilisateur utilisateur){
         System.out.println(utilisateur.getToken() + " " + utilisateur.getTokenExpire());
         DBObject doc = new BasicDBObject("nom", utilisateur.getNom()).append("prenom", utilisateur.getPrenom()).append("email", utilisateur.getEmail())
-                .append("motDePasse", utilisateur.getMotDePasse());
+                .append("motDePasse", utilisateur.getMotDePasse()).append("token", null).append("tokenExpire", null);
         collection.insert(doc);
     }
 
@@ -48,36 +48,30 @@ public class UtilisateurDao {
         String res = "notConnect";
         DBObject doc = new BasicDBObject("email", email);
         DBObject result = collection.findOne(doc);
-        System.out.println("Email: "+email+ " motDePasse: "+motDePasse+" token: "+token);
-        System.out.println(result);
         // Si l'utilisateur existe dans la base de données
         if (result != null) {
             Utilisateur utilisateur = new Utilisateur((BasicDBObject) result);
-            System.out.println(utilisateur);
             // Vérification que le token ne soit pas vide et que sa date d'éxpiration soit
             // plus petite que la date à cette instant T
             if ((utilisateur.getToken() != null) && utilisateur.getToken().equals(token)) {
-                System.out.println("3");
-                if (utilisateur.getTokenExpire().before(Utils.getCalendar().getTime())) {
+                System.out.println("Token egale");
+                System.out.println(utilisateur.getTokenExpire().toString());
+                if (Utils.getCalendar().getTime().before(utilisateur.getTokenExpire())) {
                     res = "connect";
                 }
-                System.out.println("ok");
             } else {
                 // Sinon vérification du mot de passe fournit
                 if (utilisateur.getMotDePasse().equals(motDePasse)) {
-                    System.out.println("motDePasse.equals(MotDepasse)");
                     utilisateur.setToken();
                     utilisateur.setTokenExpire();
-                    DBObject oldResult = result;
                     result.put("token", utilisateur.getToken());
                     result.put("tokenExpire", utilisateur.getTokenExpire());
-                    System.out.println(result.get("token").toString());
-                    collection.update(oldResult, result);
-                    res = "updateToken";
+                    collection.update(new BasicDBObject("_id", ((BasicDBObject) result).getObjectId("_id")), result);
+                    res = utilisateur.getToken();
                 }
             }
         }
-        System.out.println("Result: "+res);
+        System.out.println(res);
         return res;
     }
 }

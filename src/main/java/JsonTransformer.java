@@ -10,6 +10,7 @@ public class JsonTransformer implements ResponseTransformer{
 
     @Override
     public String render(Object model) throws Exception {
+        System.out.println(gson.toJson(model));
         return gson.toJson(model);
     }
 }

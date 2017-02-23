@@ -54,7 +54,7 @@ public class Application {
            String result = utilisateurDao.connexion(req.queryParams("email"),
                    MotDePasseCryptage.cryptWithMD5(req.queryParams("motDePasse")),
                    token);
-           if("connect".equals(result) || "updateToken".equals(result)){
+           if(!"notConnect".equals(result)){
                res.status(201);
                return result;
            }else{
