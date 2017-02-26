@@ -36,8 +36,10 @@ public class Application {
 
         // AJOUTER UTILISATEUR ---------------------------------------------------
         post("/senregistrer", (req, res) -> {
-            utilisateurDao.ajouterUtilisateur(new Utilisateur(req.queryParams("nom"),
-                    req.queryParams("prenom"), req.queryParams("email"),
+            utilisateurDao.ajouterUtilisateur(
+                    new Utilisateur(req.queryParams("nom"),
+                    req.queryParams("prenom"),
+                    req.queryParams("email"),
                     MotDePasseCryptage.cryptWithMD5(req.queryParams("motDePasse"))));
             res.status(201);
             return 1;
@@ -51,9 +53,14 @@ public class Application {
             if(token == null){
                 token = "";
             }
-           String result = utilisateurDao.connexion(req.queryParams("email"),
-                   MotDePasseCryptage.cryptWithMD5(req.queryParams("motDePasse")),
-                   token);
+            String result = "";
+            try {
+                result = utilisateurDao.connexion(req.queryParams("email"),
+                        MotDePasseCryptage.cryptWithMD5(req.queryParams("motDePasse")),
+                        token);
+            }catch (Exception e){
+                System.out.println(e);
+            }
            if(!"notConnect".equals(result)){
                res.status(201);
                return result;
@@ -63,6 +70,14 @@ public class Application {
            }
         }, new JsonTransformer());
         // ----------------------------------------------------------------------------
+
+        // RETOURNER L'UTILISATEUR COURANT --------------------------------------------
+        post("/utilisateur", (req, res) -> {
+            String token = req.queryParams("email");
+            Utilisateur utilisateur = utilisateurDao.getUtilisateur(token);
+            res.status(201);
+            return utilisateur;
+        }, new JsonTransformer());
     }
 
     // Enables CORS on requests. This method is an initialization method and should be called once.

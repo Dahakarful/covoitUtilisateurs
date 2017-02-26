@@ -15,13 +15,11 @@ public class Utilisateur {
     private String nom;
     private String prenom;
     private String email;
-//    private String id;
     private String motDePasse;
     private String token;
     private Date tokenExpire;
 
     public Utilisateur(BasicDBObject basicDBObject){
-//        this.id = ((ObjectId) basicDBObject.get("_id")).toString();
         this.nom = basicDBObject.getString("nom");
         this.prenom = basicDBObject.getString("prenom");
         this.email = basicDBObject.getString("email");
@@ -34,7 +32,6 @@ public class Utilisateur {
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
-//        this.id = UUID.randomUUID().toString();
         this.motDePasse = motDePasse;
         this.token = "";
         this.tokenExpire = null;
@@ -72,14 +69,6 @@ public class Utilisateur {
     public void setEmail(String email) {
         this.email = email;
     }
-
-//    public String getId() {
-//        return id;
-//    }
-
-//    public void setId(String id) {
-//        this.id = id;
-//    }
 
     public String getMotDePasse() {
         return motDePasse;

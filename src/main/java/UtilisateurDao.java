@@ -1,4 +1,5 @@
 import com.mongodb.*;
+import com.sun.javafx.embed.EmbeddedSceneDSInterface;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,7 +31,6 @@ public class UtilisateurDao {
      * @param utilisateur Utilisateur à ajouter
      */
     public void ajouterUtilisateur(Utilisateur utilisateur){
-        System.out.println(utilisateur.getToken() + " " + utilisateur.getTokenExpire());
         DBObject doc = new BasicDBObject("nom", utilisateur.getNom()).append("prenom", utilisateur.getPrenom()).append("email", utilisateur.getEmail())
                 .append("motDePasse", utilisateur.getMotDePasse()).append("token", null).append("tokenExpire", null);
         collection.insert(doc);
@@ -54,10 +54,8 @@ public class UtilisateurDao {
             // Vérification que le token ne soit pas vide et que sa date d'éxpiration soit
             // plus petite que la date à cette instant T
             if ((utilisateur.getToken() != null) && utilisateur.getToken().equals(token)) {
-                System.out.println("Token egale");
-                System.out.println(utilisateur.getTokenExpire().toString());
                 if (Utils.getCalendar().getTime().before(utilisateur.getTokenExpire())) {
-                    res = "connect";
+                    res = token;
                 }
             } else {
                 // Sinon vérification du mot de passe fournit
@@ -71,7 +69,23 @@ public class UtilisateurDao {
                 }
             }
         }
-        System.out.println(res);
         return res;
+    }
+
+    public Utilisateur getUtilisateur(String email){
+        Utilisateur utilisateur = null;
+        try {
+            System.out.println(email);
+            BasicDBObject query = new BasicDBObject();
+            query.put("email", email);
+            DBObject object = collection.findOne(query);
+            System.out.println(object);
+            BasicDBObject utilisateurOb = (BasicDBObject) object;
+            utilisateur = new Utilisateur(utilisateurOb);
+            System.out.println(utilisateur);
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        return utilisateur;
     }
 }

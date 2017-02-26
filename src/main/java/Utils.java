@@ -17,7 +17,7 @@ public class Utils {
     }
 
     public static Date stringToDate(String date) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         Date newDate = dateFormat.parse(date);
         return newDate;
     }
